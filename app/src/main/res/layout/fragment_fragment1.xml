@@ -11,7 +11,8 @@
             android:text="@string/EstadoConexion0"
             android:id="@+id/tvEstadoConexion"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/rojo"/>
 
         <ImageButton
             android:src="@drawable/reload"

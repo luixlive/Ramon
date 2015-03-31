@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
 public class Fragment1 extends Fragment {
     public static ImageButton bAdelante;
     public static ImageButton bAtras;
