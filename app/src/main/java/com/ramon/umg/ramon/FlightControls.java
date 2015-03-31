@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class FlightControls extends FragmentActivity {
 
     private ViewPager viewpager;
-    private boolean aterrizaje = false;
+    public boolean aterrizaje = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,22 +30,20 @@ public class FlightControls extends FragmentActivity {
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-
             }
-
             @Override
             public void onPageSelected(int i) {
-
             }
-
             @Override
             public void onPageScrollStateChanged(int i) {
-                Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
+                if (viewpager.getCurrentItem() == 0)
+                    Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
             }                                   //INDICA QUE YA DEJO DE SER PRESIONADO EL BOTON
         });
     }
 
     public void clickActualizar(View v){
+        //INSERTAR CODIGO PARA ENVIAR UN DATO AL ARDUINO Y ESPERAR UNA RESPUESTA
         makeToast("Buscando Conexión...");
     }
 

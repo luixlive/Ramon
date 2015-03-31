@@ -4,35 +4,13 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/EstadoConexion0"
-            android:id="@+id/tvEstadoConexion"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/rojo"/>
-
-        <ImageButton
-            android:src="@drawable/reload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ibReload"
-            android:background="@color/blanco"
-            android:layout_gravity="right"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="clickActualizar" />
-
     <ImageButton
         android:src="@drawable/flecha_adelante"
         android:background="@color/blanco"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ibAdelante"
-        android:layout_below="@+id/ibReload"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <ImageButton
@@ -42,8 +20,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/ibDerecha"
         android:layout_alignTop="@+id/ibIzquierda"
-        android:layout_alignRight="@+id/ibReload"
-        android:layout_alignEnd="@+id/ibReload" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageButton
         android:src="@drawable/flecha_izquierda"
