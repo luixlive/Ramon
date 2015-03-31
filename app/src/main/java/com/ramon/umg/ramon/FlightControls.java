@@ -58,6 +58,11 @@ public class FlightControls extends FragmentActivity {
         }
     }
 
+    public void clickPower(View v){
+        //INSERTAR CODIGO PARA ENVIAR UN DATO AL ARDUINO Y ESPERAR UNA RESPUESTA
+        makeToast("Encendiendo...");
+    }
+
     private void makeToast(String texto){
         Toast toast = Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_SHORT);
         toast.show();
