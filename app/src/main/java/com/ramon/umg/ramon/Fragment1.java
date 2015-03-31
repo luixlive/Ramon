@@ -1,6 +1,5 @@
 package com.ramon.umg.ramon;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,29 +8,28 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Fragment1.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Fragment1#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Fragment1 extends Fragment {
+    public static ImageButton bAdelante;
+    public static ImageButton bAtras;
+    public static ImageButton bDerecha;
+    public static ImageButton bIzquierda;
+    public static ImageButton bArriba;
+    public static ImageButton bAbajo;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment1, container, false);
 
-        final ImageButton bAdelante = (ImageButton)view.findViewById(R.id.ibAdelante);
-        final ImageButton bAtras = (ImageButton)view.findViewById(R.id.ibAtras);
-        final ImageButton bDerecha = (ImageButton)view.findViewById(R.id.ibDerecha);
-        final ImageButton bIzquierda = (ImageButton)view.findViewById(R.id.ibIzquierda);
-        final ImageButton bArriba = (ImageButton)view.findViewById(R.id.ibArriba);
-        final ImageButton bAbajo = (ImageButton)view.findViewById(R.id.ibAbajo);
+        bAdelante = (ImageButton)view.findViewById(R.id.ibAdelante);
+        bAtras = (ImageButton)view.findViewById(R.id.ibAtras);
+        bDerecha = (ImageButton)view.findViewById(R.id.ibDerecha);
+        bIzquierda = (ImageButton)view.findViewById(R.id.ibIzquierda);
+        bArriba = (ImageButton)view.findViewById(R.id.ibArriba);
+        bAbajo = (ImageButton)view.findViewById(R.id.ibAbajo);
 
         bAdelante.setOnTouchListener(new View.OnTouchListener() {
 
@@ -101,6 +99,17 @@ public class Fragment1 extends Fragment {
         });
 
         return view;
+    }
+
+    //ACTUALIZAR CUANDO TENGAMOS EL PROTOCOLO CON EL QUE LE DIREMOS EL MOVIENTO AL ARDUINO, PUES
+    //ESTE METODO DEBE REINICIAR LOS BOTONES, LO QUE INDICA QUE YA NO ESTAN SIENDO PRESIONADOS
+    public static void inicializarBotones(){
+        bAdelante.setImageResource(R.drawable.flecha_adelante);
+        bAtras.setImageResource(R.drawable.flecha_atras);
+        bDerecha.setImageResource(R.drawable.flecha_derecha);
+        bIzquierda.setImageResource(R.drawable.flecha_izquierda);
+        bArriba.setImageResource(R.drawable.flecha_arriba);
+        bAbajo.setImageResource(R.drawable.flecha_abajo);
     }
 
 }

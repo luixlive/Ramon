@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -23,6 +24,25 @@ public class FlightControls extends FragmentActivity {
         viewpager = (ViewPager)findViewById(R.id.pager);
         PagerAdapter padapter = new PagerAdapter(getSupportFragmentManager());
         viewpager.setAdapter(padapter);
+        //Cuando un boton es presionado, y se arrastra hacia la siguiente pagina (se cambia de fragmen el viewpager)
+        //los botones deben reiniciarse (volver a su imagen original) y enviar el codigo al arduino de que ya no se
+        //debe seguir moviendo.
+        viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+                Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
+            }                                   //INDICA QUE YA DEJO DE SER PRESIONADO EL BOTON
+        });
     }
 
     public void clickActualizar(View v){
