@@ -20,7 +20,7 @@ import android.os.Vibrator;
  *
  * FlighControls es la Activity main del proyecto
  */
-public class FlightControls extends FragmentActivity {  //Activity principal
+public class FlightControls extends FragmentActivity implements  Runnable{  //Activity principal
     /**
      * viewpager: Encargado de la vista de los 3 fragments.
      */
@@ -41,6 +41,9 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      * vib: Instancia de la clase Vibrator, se utiliza para que el telefono vibre cuando se pulse algún botón.
      */
     Vibrator vib;
+
+    public static volatile boolean banderaConexion = false;
+    Thread compruebaConexion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,12 @@ public class FlightControls extends FragmentActivity {  //Activity principal
                     Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
             }                                   //INDICA QUE YA DEJO DE SER PRESIONADO EL BOTON
         });
+
+        //inicializamos conexion (Puerto Serial)
+        Conexion.setConexion(this, 9800);
+        Conexion.setTiempoCompruebaConexion(3000);
+        compruebaConexion = new Thread();
+        compruebaConexion.start();
     }
 
     /**
@@ -76,7 +85,7 @@ public class FlightControls extends FragmentActivity {  //Activity principal
     private void actualizarConexion(){
         ImageButton power = (ImageButton)findViewById(R.id.ibPower);
         ImageButton actualizar = (ImageButton)findViewById(R.id.ibReload);
-        if (conexion && (tvconexion != null)) {
+        if (banderaConexion && (tvconexion != null)) {
             tvconexion.setText(R.string.EstadoConexion1);
             tvconexion.setTextColor(getResources().getColor(R.color.verde));
             power.setVisibility(View.VISIBLE);
@@ -106,7 +115,7 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      * @param v
      */
     public void clickAterrizaje(View v){
-        if (!conexion)
+        if (!banderaConexion)
             return;
         vib.vibrate(200);
         Toast toast;
@@ -158,4 +167,22 @@ public class FlightControls extends FragmentActivity {  //Activity principal
         Toast toast = Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_SHORT);
         toast.show();
     }
-}
+
+    /**
+     * Este hilo corre para comprobar el estado de conexion
+     * de la aplicacoin con Ramon
+     * @autor JCORREA
+     */
+    @Override
+    public void run() {
+        while(true) try {
+                actualizarConexion();
+                compruebaConexion.wait(Conexion.getTiempoCompruebaConexion());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }finally{
+                banderaConexion = false;
+            }
+        }
+    }
+
