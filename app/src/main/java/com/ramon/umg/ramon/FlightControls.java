@@ -70,23 +70,27 @@ public class FlightControls extends FragmentActivity {  //Activity principal
     }
 
     /**
-     * actualizarConexion: Actualiza el letrero de conexión, y se encarga de mostrar u ocultar los botones
-     * power y reload según el caso.
+     * actualizarConexion: Actualiza el letrero de conexión, y se encarga de todos los procesos que se alteran cuando
+     * se pierde o se recupera la conexión.
      */
     private void actualizarConexion(){
         ImageButton power = (ImageButton)findViewById(R.id.ibPower);
         ImageButton actualizar = (ImageButton)findViewById(R.id.ibReload);
+        String textSensores = "";       //AÑADIR TEXTO RECIBIDO DE LOS SENSORES YA CON FORMATO A MOSTRAR
+
         if (conexion && (tvconexion != null)) {
-            tvconexion.setText(R.string.EstadoConexion1);
+            tvconexion.setText(getResources().getString(R.string.EstadoConexion1));
             tvconexion.setTextColor(getResources().getColor(R.color.verde));
             power.setVisibility(View.VISIBLE);
             actualizar.setVisibility(View.INVISIBLE);
+            Fragment2.actualizarSensores(textSensores);
         }
         else if (tvconexion != null) {
-            tvconexion.setText((R.string.EstadoConexion0));
+            tvconexion.setText(getResources().getString(R.string.EstadoConexion0));
             tvconexion.setTextColor(getResources().getColor(R.color.rojo));
             power.setVisibility(View.INVISIBLE);
             actualizar.setVisibility(View.VISIBLE);
+            Fragment2.avisoSensoresDesactualizados();
         }
     }
 
