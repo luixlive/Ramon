@@ -20,7 +20,7 @@ import android.os.Vibrator;
  *
  * FlighControls es la Activity main del proyecto
  */
-public class FlightControls extends FragmentActivity implements  Runnable{  //Activity principal
+public class FlightControls extends FragmentActivity {  //Activity principal
     /**
      * viewpager: Encargado de la vista de los 3 fragments.
      */
@@ -41,9 +41,6 @@ public class FlightControls extends FragmentActivity implements  Runnable{  //Ac
      * vib: Instancia de la clase Vibrator, se utiliza para que el telefono vibre cuando se pulse algún botón.
      */
     Vibrator vib;
-
-    public static volatile boolean banderaConexion = false;
-    Thread compruebaConexion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,32 +67,30 @@ public class FlightControls extends FragmentActivity implements  Runnable{  //Ac
                     Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
             }                                   //INDICA QUE YA DEJO DE SER PRESIONADO EL BOTON
         });
-
-        //inicializamos conexion (Puerto Serial)
-        Conexion.setConexion(this, 9800);
-        Conexion.setTiempoCompruebaConexion(3000);
-        compruebaConexion = new Thread();
-        compruebaConexion.start();
     }
 
     /**
-     * actualizarConexion: Actualiza el letrero de conexión, y se encarga de mostrar u ocultar los botones
-     * power y reload según el caso.
+     * actualizarConexion: Actualiza el letrero de conexión, y se encarga de todos los procesos que se alteran cuando
+     * se pierde o se recupera la conexión.
      */
     private void actualizarConexion(){
         ImageButton power = (ImageButton)findViewById(R.id.ibPower);
         ImageButton actualizar = (ImageButton)findViewById(R.id.ibReload);
-        if (banderaConexion && (tvconexion != null)) {
-            tvconexion.setText(R.string.EstadoConexion1);
+        String textSensores = "";       //AÑADIR TEXTO RECIBIDO DE LOS SENSORES YA CON FORMATO A MOSTRAR
+
+        if (conexion && (tvconexion != null)) {
+            tvconexion.setText(getResources().getString(R.string.EstadoConexion1));
             tvconexion.setTextColor(getResources().getColor(R.color.verde));
             power.setVisibility(View.VISIBLE);
             actualizar.setVisibility(View.INVISIBLE);
+            Fragment2.actualizarSensores(textSensores);
         }
         else if (tvconexion != null) {
-            tvconexion.setText((R.string.EstadoConexion0));
+            tvconexion.setText(getResources().getString(R.string.EstadoConexion0));
             tvconexion.setTextColor(getResources().getColor(R.color.rojo));
             power.setVisibility(View.INVISIBLE);
             actualizar.setVisibility(View.VISIBLE);
+            Fragment2.avisoSensoresDesactualizados();
         }
     }
 
@@ -115,7 +110,7 @@ public class FlightControls extends FragmentActivity implements  Runnable{  //Ac
      * @param v
      */
     public void clickAterrizaje(View v){
-        if (!banderaConexion)
+        if (!conexion)
             return;
         vib.vibrate(200);
         Toast toast;
@@ -167,22 +162,4 @@ public class FlightControls extends FragmentActivity implements  Runnable{  //Ac
         Toast toast = Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_SHORT);
         toast.show();
     }
-
-    /**
-     * Este hilo corre para comprobar el estado de conexion
-     * de la aplicacoin con Ramon
-     * @autor JCORREA
-     */
-    @Override
-    public void run() {
-        while(true) try {
-                actualizarConexion();
-                compruebaConexion.wait(Conexion.getTiempoCompruebaConexion());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }finally{
-                banderaConexion = false;
-            }
-        }
-    }
-
+}
