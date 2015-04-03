@@ -1,32 +1,65 @@
 package com.ramon.umg.ramon;
 
-import android.hardware.usb.UsbManager;
-import android.content.Context;
-import com.hoho.android.usbserial.driver.UsbSerialDriver;
-import com.hoho.android.usbserial.driver.UsbSerialProber;
+import android.os.Handler;
 
 import java.io.IOException;
+import java.util.LinkedList;
+
+import serialUSB.ISerial;
+import serialUSB.SerialEvent;
+import serialUSB.SerialListener;
+import serialUSB.UsbDeviceID;
+import serialUSB.UsbSerial;
 
 /**
  * Created by JCORREA on 30/03/2015.
+ * Esta clase soporta las acciones para escribir y escuchar
+ * el puerto serial, vital para la comunicacion con Ramon
  */
 public class Conexion {
 
-    // Get UsbManager from Android.
-    private static UsbManager manager;
-    // Find the first available driver.
-    private static UsbSerialDriver driver;
-    private static int baudRate = 115200;
     private static int tiempoCompruebaConexion = 5000;
+    private static Handler handler=new Handler();
+    private static ISerial usb_serial=null;
+    private static LinkedList<String> data_raw = new LinkedList<String>();
+    private static volatile String datos = new String();
 
     /**
-     * Este metodo configura y crea la conexion con
-     * Ramon(configura puerto serial)
+     * Este metodo inicializa la configuracion del puerto serial, y crea el lister
+     * que estara escuchando el puerto serial para leer los datos que lleguen
      */
     public static void setConexion(FlightControls activity, int baudRate){
-        manager = (UsbManager) activity.getSystemService(Context.USB_SERVICE);
-        driver = UsbSerialProber.acquire(manager);
-        setBaudRate(baudRate);
+        if(usb_serial != null)
+            return;
+
+        usb_serial = new UsbSerial(UsbDeviceID.FT232RL,baudRate,activity);
+        usb_serial.open();
+
+        usb_serial.addEventListener(new SerialListener() {
+
+            @Override
+            public void incomingDataEvent(final SerialEvent evt) {
+
+                handler.post(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        data_raw.addFirst(new String(evt.read()));
+
+                        StringBuilder data = new StringBuilder();
+                        for(String c : data_raw){
+                            data.append(c);
+                        }
+                        datos.concat(String.valueOf(data));
+                        if(data_raw.size() > 20){
+                            data_raw.removeLast();
+                        }
+
+                    }
+                });
+            }
+
+        });
     }
 
     /**
@@ -46,21 +79,9 @@ public class Conexion {
      * @return String con datos leidos
      */
     public static String lee() throws IOException {
-        String datos = null;
-
-        if (driver != null) try {
-            driver.open();
-            driver.setBaudRate(getBaudRate());
-
-            byte buffer[] = new byte[16];
-            int numBytesRead = driver.read(buffer, 1000);
-            datos = buffer.toString();
-        } catch (IOException e) {
-            System.out.println("Error en la lectura de datos");
-        } finally {
-            driver.close();
-        }
-        return datos;
+        String cadena = datos;
+        datos = new String();
+        return cadena;
     }
 
     /**
@@ -69,22 +90,20 @@ public class Conexion {
      * @param dato (byte)
      */
     public static void escribe(byte dato){
-        try {
-            byte [] datos  = new byte[1];
-            datos[0] = dato;
-            driver.write(datos,1);
-        } catch (IOException e) {
-            System.out.println("Error al ecribir en el puerto");
-            e.printStackTrace();
-        }
+        byte [] datos = new byte [1];
+        datos[0]= dato;
+        usb_serial.write(datos);
     }
 
-    public static int getBaudRate() {
-        return baudRate;
+    /**
+     * Este metod escribe en el serial del dispositivo
+     * el String que se pasa como parametro
+     * @param dato String que se quiere escribir en el puerto serial
+     */
+    public static void escribe(String dato){
+        usb_serial.write(dato);
     }
-    public static void setBaudRate(int baudRate) {
-        Conexion.baudRate = baudRate;
-    }
+
     public static int getTiempoCompruebaConexion() {
         return tiempoCompruebaConexion;
     }

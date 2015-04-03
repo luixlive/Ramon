@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Vibrator;
 
+import java.io.IOException;
+
 /**
  *Autor Luis Alfonso Chávez Abbadie
  * Proyecto Ramón
@@ -20,7 +22,7 @@ import android.os.Vibrator;
  *
  * FlighControls es la Activity main del proyecto
  */
-public class FlightControls extends FragmentActivity {  //Activity principal
+public class FlightControls extends FragmentActivity implements  Runnable{  //Activity principal
     /**
      * viewpager: Encargado de la vista de los 3 fragments.
      */
@@ -30,10 +32,6 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      */
     public boolean aterrizaje = false;
     /**
-     * conexion: Bandera que indica el estado de la conexion con el drone. 0 = desconectado, 1 = conectado
-     */
-    public static boolean conexion = false;    //Siempre que se modifique esta bandera, hay que llamar al metodo actualizarConexion()
-    /**
      * tvconexion: TextView que se utilizará para acceder al letrero de conexión que forma parte de esta activity.
      */
     private TextView tvconexion;
@@ -41,6 +39,9 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      * vib: Instancia de la clase Vibrator, se utiliza para que el telefono vibre cuando se pulse algún botón.
      */
     Vibrator vib;
+
+    public static volatile boolean banderaEstadoConexion = false; //Siempre que se modifique esta bandera, hay que llamar al metodo actualizaEstadoConexion()
+    Thread hiloPruebaConexion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +68,24 @@ public class FlightControls extends FragmentActivity {  //Activity principal
                     Fragment1.inicializarBotones(); // ESTE METODO Y ACTUALIZAR PARA QUE LE MANDE AL ARDUINO LA VARIABLE QUE
             }                                   //INDICA QUE YA DEJO DE SER PRESIONADO EL BOTON
         });
+
+        //inicializamos conexion (Puerto Serial)
+        Conexion.setConexion(this, 9800);
+        Conexion.setTiempoCompruebaConexion(3000);
+        hiloPruebaConexion = new Thread();
+        hiloPruebaConexion.start();
     }
 
     /**
      * actualizarConexion: Actualiza el letrero de conexión, y se encarga de todos los procesos que se alteran cuando
      * se pierde o se recupera la conexión.
      */
-    private void actualizarConexion(){
+    private void actualizaEstadoConexion(){
         ImageButton power = (ImageButton)findViewById(R.id.ibPower);
         ImageButton actualizar = (ImageButton)findViewById(R.id.ibReload);
         String textSensores = "";       //AÑADIR TEXTO RECIBIDO DE LOS SENSORES YA CON FORMATO A MOSTRAR
 
-        if (conexion && (tvconexion != null)) {
+        if (banderaEstadoConexion && (tvconexion != null)) {
             tvconexion.setText(getResources().getString(R.string.EstadoConexion1));
             tvconexion.setTextColor(getResources().getColor(R.color.verde));
             power.setVisibility(View.VISIBLE);
@@ -100,9 +107,20 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      * @param v
      */
     public void clickActualizar(View v){
-        //INSERTAR CODIGO PARA ENVIAR UN DATO AL ARDUINO Y ESPERAR UNA RESPUESTA
-        vib.vibrate(200);
-        makeToast("Buscando conexión...");
+        try {
+            if(Conexion.pruebaConexion()) {
+                vib.vibrate(200);
+                makeToast("Conexion establecida");
+            }else{
+                vib.vibrate(200);
+                makeToast("No su pudo conectar con Ramon");
+            }
+
+        } catch (IOException e) {
+            vib.vibrate(200);
+            makeToast("Error al tratar de establecer la comunicacion");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -110,14 +128,16 @@ public class FlightControls extends FragmentActivity {  //Activity principal
      * @param v
      */
     public void clickAterrizaje(View v){
-        if (!conexion)
+        if (!banderaEstadoConexion)
             return;
         vib.vibrate(200);
         Toast toast;
         if (aterrizaje) {
+            Torre.guardarTrenAterrizaje();
             makeToast("Guardando Patín de Aterrizaje");
             aterrizaje = false;
         } else {
+            Torre.despliegaTrenAterrizaje();
             makeToast("Desplegando Patín de Aterrizaje");
             aterrizaje = true;
         }
@@ -131,13 +151,13 @@ public class FlightControls extends FragmentActivity {  //Activity principal
         vib.vibrate(200);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("¿Segur@?");
+        builder.setTitle("¿Seguir@?");
         builder.setMessage("Una posición de despeje o aterrizaje comprometida, podría afectar la integridad de Ramón.");
 
         builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                //ENVIAR DATO AL ARDUINO INDICANDO QUE SE APAGUEN/PRENDAN LOS MOTORES
+                Torre.switchMotores();
                 dialog.dismiss();
             }
 
@@ -161,5 +181,23 @@ public class FlightControls extends FragmentActivity {  //Activity principal
     private void makeToast(String texto){
         Toast toast = Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    /**
+     * Este hilo corre para comprobar el estado de conexion
+     * de la aplicacoin con Ramon
+     * @autor JCORREA
+     */
+    @Override
+    public void run() {
+        while(true) try {
+            actualizaEstadoConexion();
+            banderaEstadoConexion = false;
+            hiloPruebaConexion.wait(Conexion.getTiempoCompruebaConexion());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally{
+            banderaEstadoConexion = false;
+        }
     }
 }

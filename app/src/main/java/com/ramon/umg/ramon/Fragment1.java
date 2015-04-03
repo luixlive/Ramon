@@ -55,15 +55,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAdelante.setImageResource(R.drawable.flecha_arriba);
-                    Piloto.desplazar(Piloto.DIR_ADELANTE);
+                    Torre.desplazar(Torre.DIR_ADELANTE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAdelante.setImageResource(R.drawable.flecha_adelante);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -72,15 +72,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAtras.setImageResource(R.drawable.flecha_abajo);
-                    Piloto.desplazar(Piloto.DIR_ATRAS);
+                    Torre.desplazar(Torre.DIR_ATRAS);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAtras.setImageResource(R.drawable.flecha_atras);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -89,15 +89,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bDerecha.setImageResource(R.drawable.flecha_derecha2);
-                    Piloto.desplazar(Piloto.DIR_DERECHA);
+                    Torre.desplazar(Torre.DIR_DERECHA);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bDerecha.setImageResource(R.drawable.flecha_derecha);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -106,15 +106,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bIzquierda.setImageResource(R.drawable.flecha_izquierda2);
-                    Piloto.desplazar(Piloto.DIR_IZQUIERDA);
+                    Torre.desplazar(Torre.DIR_IZQUIERDA);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bIzquierda.setImageResource(R.drawable.flecha_izquierda);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -123,15 +123,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bArriba.setImageResource(R.drawable.flecha_adelante);
-                    Piloto.subir();
+                    Torre.subir();
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bArriba.setImageResource(R.drawable.flecha_arriba);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -140,15 +140,15 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.banderaConexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAbajo.setImageResource(R.drawable.flecha_atras);
-                    Piloto.bajar();
+                    Torre.bajar();
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAbajo.setImageResource(R.drawable.flecha_abajo);
-                    Piloto.desplazar(Piloto.MODO_ESTATICO);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
                 }
                 return true;
             }
@@ -169,7 +169,7 @@ public class Fragment1 extends Fragment {
         bIzquierda.setImageResource(R.drawable.flecha_izquierda);
         bArriba.setImageResource(R.drawable.flecha_arriba);
         bAbajo.setImageResource(R.drawable.flecha_abajo);
-        Piloto.desplazar(Piloto.MODO_ESTATICO);
+        Torre.desplazar(Torre.MODO_ESTATICO);
     }
 
 }
