@@ -1,14 +1,13 @@
 package com.ramon.umg.ramon;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 /**
  * Fragment1: Clase que hereda de fragment, mostrará controles de vuelo y botón para despleguar o guardar el patín de aterrizaje.
@@ -56,12 +55,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAdelante.setImageResource(R.drawable.flecha_arriba);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.desplazar(Torre.DIR_ADELANTE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAdelante.setImageResource(R.drawable.flecha_adelante);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -69,12 +72,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAtras.setImageResource(R.drawable.flecha_abajo);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.desplazar(Torre.DIR_ATRAS);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAtras.setImageResource(R.drawable.flecha_atras);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -82,12 +89,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bDerecha.setImageResource(R.drawable.flecha_derecha2);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.desplazar(Torre.DIR_DERECHA);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bDerecha.setImageResource(R.drawable.flecha_derecha);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -95,12 +106,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bIzquierda.setImageResource(R.drawable.flecha_izquierda2);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.desplazar(Torre.DIR_IZQUIERDA);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bIzquierda.setImageResource(R.drawable.flecha_izquierda);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -108,12 +123,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bArriba.setImageResource(R.drawable.flecha_adelante);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.subir();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bArriba.setImageResource(R.drawable.flecha_arriba);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -121,12 +140,16 @@ public class Fragment1 extends Fragment {
 
             @Override
             public boolean onTouch(View v, MotionEvent event){
-                if (!FlightControls.conexion)
+                if (!FlightControls.banderaEstadoConexion)
                     return true;
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     bAbajo.setImageResource(R.drawable.flecha_atras);
-                if (event.getAction() == MotionEvent.ACTION_UP)
+                    Torre.bajar();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bAbajo.setImageResource(R.drawable.flecha_abajo);
+                    Torre.desplazar(Torre.MODO_ESTATICO);
+                }
                 return true;
             }
         });
@@ -146,6 +169,7 @@ public class Fragment1 extends Fragment {
         bIzquierda.setImageResource(R.drawable.flecha_izquierda);
         bArriba.setImageResource(R.drawable.flecha_arriba);
         bAbajo.setImageResource(R.drawable.flecha_abajo);
+        Torre.desplazar(Torre.MODO_ESTATICO);
     }
 
 }
